@@ -4,7 +4,13 @@ if (document.readyState === "complete" || document.readyState === "interactive")
     console.log("DOM is already loaded. Running script...");
     initializeTab();
 } else {
-    document.addEventListener("DOMContentLoaded", initializeTab);
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("Initializing tabs...");
+        if ((window as any).addCoveAccountInfoTab) {
+            (window as any).addCoveAccountInfoTab();
+        }
+        initializeTab();
+    });
 }
 
 function initializeTab() {
@@ -35,15 +41,6 @@ function initializeTab() {
         console.log("No matching tab detected.");
     }
 }
-
-// Initialize the extension
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Initializing tabs...");
-    if ((window as any).addCoveAccountInfoTab) {
-        (window as any).addCoveAccountInfoTab();
-    }
-    initializeTab();
-});
 
 // Handle hash changes for dynamic navigation
 window.addEventListener("hashchange", initializeTab);
