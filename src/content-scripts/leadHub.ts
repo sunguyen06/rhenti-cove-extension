@@ -5,6 +5,7 @@ function initializeLeadHub() {
         return;
     }
 
+    addScreeningButton();
     console.log("Initializing Lead Hub...");
     const mainContainer = document.querySelector(".main-container");
     if (!mainContainer) {
@@ -50,6 +51,7 @@ function waitForSaveButton() {
 }
 
 // Function to add custom buttons to the left of the modal
+// TODO: Add the Check Balance button
 function addCustomButtonsToModal() {
     const modal = document.querySelector(".modal-content") as HTMLElement; // Cast modal to HTMLElement
     if (!modal) {
@@ -136,13 +138,14 @@ function collectFormData() {
 }
 
 // Send data to the API
+// TODO: Test to see if it works properly, check if API is linked
 async function sendToAPI(formData: { firstName: string; lastName: string; email: string; phone: string }) {
     try {
         const response = await fetch("https://cove-stage-a687fd333000.herokuapp.com/api/screenings/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer YOUR_API_KEY_HERE", // Replace with your actual API key
+                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzI1NzFlMDZkMDQwZDY5MzBiZjg1OWEiLCJpYXQiOjE3MzE0NTExMjAsImV4cCI6MTc2MjU1NTEyMH0.kQDoKcLdPgng0W68tbbQZQXIPQHvPdaf-wo2f0ULQjo", // Replace with your actual API key
             },
             body: JSON.stringify({
                 applicantFirstName: formData.firstName,
@@ -167,6 +170,54 @@ async function sendToAPI(formData: { firstName: string; lastName: string; email:
         console.error("Error sending screening:", error);
         alert("An error occurred while sending the screening.");
     }
+}
+
+// Adds the screening button to the leadhub interface
+// TODO: Add button UI/UX features such as colour change on click 
+// TODO: Resize the iframe upon button click
+function addScreeningButton() {
+    // and make the website add to container properly
+    const buttonContainer = document.querySelector("div[style*='border-radius: 4px;'][style*='border: 1px solid #E0E0E0;']");
+    if (!buttonContainer) {
+        console.error("Button container not found. Retrying...");
+        setTimeout(addScreeningButton, 500); // Retry until the DOM is ready
+        return;
+    }
+
+    // Check if the button already exists to prevent duplicates
+    if (buttonContainer.querySelector(".screening-button")) {
+        console.log("Screening button already exists.");
+        return;
+    }
+
+    // Create the new button
+    const newButton = document.createElement("div");
+    newButton.className = "listCard screening-button";
+    newButton.style.cssText = `
+        border-left: solid 1px #E0E0E0;
+        border-right: solid 1px #E0E0E0;
+        background: #E0E0E0;
+        cursor: pointer;
+    `;
+    newButton.innerHTML = `<span style="color: #1C2630;">SCREENING</span>`;
+
+    // Add click event listener to the new button
+    newButton.addEventListener("click", () => {
+        const leadDashboard = document.querySelector("#lead-dashboard");
+        if (leadDashboard) {
+            leadDashboard.innerHTML = `
+                <iframe src="https://cove-stage.vercel.app/agent/applicants/672571e06d040d6930bf859a" 
+                        style="width:100%; height:100%; border:none;"></iframe>
+            `;
+            console.log("lead dashboard updated to show screening view.");
+        } else {
+            console.error("lead dashboard not found.");
+        }
+    });
+
+    // Append the new button to the container
+    buttonContainer.appendChild(newButton);
+    console.log("Applicants button added to the button container.");
 }
 
 (window as any).initializeLeadHub = initializeLeadHub;
