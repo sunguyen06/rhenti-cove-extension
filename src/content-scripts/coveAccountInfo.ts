@@ -1,3 +1,4 @@
+// Main Initialization function
 function initializeCoveAccountInfo() {
     console.log("Initializing extension...");
 
@@ -5,6 +6,7 @@ function initializeCoveAccountInfo() {
     addCoveAccountInfoTab();
 }
 
+// Opens the account info page in main container
 function openCoveAccountInfo() {
     console.log("Opening Cove Account Info...");
 
@@ -26,6 +28,8 @@ function openCoveAccountInfo() {
     if (activeTab) updateActiveTab(activeTab);
 }
 
+// Adds the Cove Account Info button to Sidebar
+// TODO: Add UI/UX features that align with rest of website
 function addCoveAccountInfoTab() {
     console.log("Adding Cove Account Info tab...");
 
@@ -71,6 +75,8 @@ function addCoveAccountInfoTab() {
     console.log("Cove Account Info tab added successfully.");
 }
 
+// Updates your current tab
+// FIXME: Fix the bug where you sometimes can't access another sidebar button on the cove account info interface.
 function updateActiveTab(activeTab: HTMLElement) {
     // Remove active class from all sidebar items
     document.querySelectorAll(".sidebar-item").forEach((tab) => {
