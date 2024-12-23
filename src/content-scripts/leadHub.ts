@@ -174,10 +174,11 @@ async function sendToAPI(formData: { firstName: string; lastName: string; email:
 
 // Adds the screening button to the leadhub interface
 // TODO: Add button UI/UX features such as colour change on click 
-// TODO: Resize the iframe upon button click
 function addScreeningButton() {
-    // and make the website add to container properly
-    const buttonContainer = document.querySelector("div[style*='border-radius: 4px;'][style*='border: 1px solid #E0E0E0;']");
+    // Locate the button container
+    const buttonContainer = document.querySelector(
+        "div[style*='border-radius: 4px;'][style*='border: 1px solid #E0E0E0;']"
+    ) as HTMLElement | null;
     if (!buttonContainer) {
         console.error("Button container not found. Retrying...");
         setTimeout(addScreeningButton, 500); // Retry until the DOM is ready
@@ -190,7 +191,7 @@ function addScreeningButton() {
         return;
     }
 
-    // Create the new button
+    // Create the Screening button
     const newButton = document.createElement("div");
     newButton.className = "listCard screening-button";
     newButton.style.cssText = `
@@ -201,23 +202,37 @@ function addScreeningButton() {
     `;
     newButton.innerHTML = `<span style="color: #1C2630;">SCREENING</span>`;
 
-    // Add click event listener to the new button
+    // Add click event listener to the button
     newButton.addEventListener("click", () => {
-        const leadDashboard = document.querySelector("#lead-dashboard");
-        if (leadDashboard) {
-            leadDashboard.innerHTML = `
-                <iframe src="https://cove-stage.vercel.app/agent/applicants/672571e06d040d6930bf859a" 
-                        style="width:100%; height:100%; border:none;"></iframe>
-            `;
-            console.log("lead dashboard updated to show screening view.");
-        } else {
-            console.error("lead dashboard not found.");
+        // Target the #lead-dashboard and Action Filter sections
+        const targetSection = document.querySelector("#lead-dashboard") as HTMLElement | null;
+        const actionFilterContainer = document.querySelector(".third-filter-wrapper-content") as HTMLElement | null;
+        const actionFilterWrapper = actionFilterContainer?.parentElement; // Assuming the container text bar is a parent
+
+        if (!targetSection) {
+            console.error("Target section for Screening not found.");
+            return;
         }
+
+        // Remove or hide the Action Filter entirely, including its text bar
+        if (actionFilterWrapper) {
+            actionFilterWrapper.style.display = "none"; // Hide the entire container
+            console.log("Action Filter (including text bar) hidden for Screening tab.");
+        }
+
+        // Replace the section's content with the iframe
+        targetSection.innerHTML = `
+            <iframe 
+                src="https://cove-stage.vercel.app/agent/applicants/672571e06d040d6930bf859a" 
+                style="width: 100%; height: calc(100vh - 200px); border: none; display: block;">
+            </iframe>
+        `;
+        console.log("Switched to Screening tab.");
     });
 
-    // Append the new button to the container
+    // Append the Screening button to the button container
     buttonContainer.appendChild(newButton);
-    console.log("Applicants button added to the button container.");
+    console.log("Screening button added to the button container.");
 }
 
 (window as any).initializeLeadHub = initializeLeadHub;
